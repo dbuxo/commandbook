@@ -3,6 +3,7 @@ package com.sk89q.commandbook;
 import com.sk89q.commandbook.session.PersistentSession;
 import com.sk89q.commandbook.session.SessionComponent;
 import com.sk89q.commandbook.util.LocationUtil;
+import com.sk89q.commandbook.util.ChatUtil;
 import com.sk89q.commandbook.util.entity.player.PlayerUtil;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
@@ -84,6 +85,8 @@ public class AFKComponent extends BukkitComponent implements Runnable, Listener 
         public boolean afkGeneralProtection = true;
         @Setting("afk-command-protection")
         public boolean afkCommandProtection = false;
+        @Setting("afk-prefix")
+        public String afkPrefix = "`2";
     }
 
     /**
@@ -231,10 +234,10 @@ public class AFKComponent extends BukkitComponent implements Runnable, Listener 
                     }, 1);
                 } else if (!session.isAFK()) {
 
-                    // Grey out list name
-                    String name = target.getName();
+                    // Set name with prefix
+                    String name = ChatUtil.replaceColorMacros(config.afkPrefix) + target.getName();
                     session.setLastTabName(target.getPlayerListName());
-                    target.setPlayerListName(ChatColor.GRAY + name.substring(0, Math.min(14, name.length())));
+                    target.setPlayerListName(name.substring(0, Math.min(16, name.length())));
 
                     // Mark the player as AFK
                     session.setAFK(true);
